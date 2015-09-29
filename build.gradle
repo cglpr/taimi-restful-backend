@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile "javax.ws.rs:jsr311-api:1.1.1"
+
+    compile 'com.sun.jersey:jersey-server:1.19'
+    compile 'com.sun.jersey:jersey-core:1.19'
+    compile 'com.sun.jersey:jersey-servlet:1.19'
+	compile 'org.json:json:20140107'
+	compile 'com.sun.jersey:jersey-json:1.19'
+	compile 'com.google.visualization:visualization-datasource:1.1.1'
+	compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+
+    testCompile "junit:junit-dep:4.10"
+}
