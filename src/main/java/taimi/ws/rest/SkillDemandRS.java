@@ -17,6 +17,13 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+/**
+ * Warning: Do not use -> s-l-o-w service
+ * 
+ * @deprecated
+ * @author vpotry
+ *
+ */
 @Path("extskilldemand")
 public class SkillDemandRS {
 	

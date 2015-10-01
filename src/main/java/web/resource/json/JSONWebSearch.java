@@ -13,7 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-
+/**
+ * Gets JSON from URLs
+ * 
+ * @author vpotry
+ * 
+ * @version 0.9
+ * 
+ */
 public class JSONWebSearch {
 
 	  private static String readAll(Reader rd) throws IOException {

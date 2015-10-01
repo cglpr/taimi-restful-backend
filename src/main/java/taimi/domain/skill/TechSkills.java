@@ -2,15 +2,25 @@ package taimi.domain.skill;
 
 /**
  * 
- * Should be read from database
+ * TODO: Should be read from database!
  *
  */
 public enum TechSkills {
 	Angularjs,
+	Groovy,
 	Grails,
 	Java,
+	JavaScript,
+	JavaEE,
 	JQuery,
 	Ruby,
 	Python,
-	Perl
+	Perl,
+	Scala,
+	Spring,
+	SQL,
+	Weblogic,
+	Websphere,
+	JBoss,
+	Tomcat
 }

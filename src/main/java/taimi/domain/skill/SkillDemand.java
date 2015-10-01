@@ -1,10 +1,20 @@
 package taimi.domain.skill;
 
-public class SkillDemand {
+/**
+ * 
+ * @author vpotry
+ *
+ */
+public class SkillDemand implements Comparable<SkillDemand> {
 	private String skill;
 	private int demandCnt;
 	
 	public SkillDemand() {
+	}
+	
+	public SkillDemand(String skill, int demandCnt) {
+		this.skill = skill;
+		this.demandCnt = demandCnt;
 	}
 	
 	public String getSkill() {
@@ -21,6 +31,11 @@ public class SkillDemand {
 	
 	public void setDemandCnt(int demandCnt) {
 		this.demandCnt = demandCnt;
+	}
+
+	@Override
+	public int compareTo(SkillDemand sd) {
+		return sd.getDemandCnt() - this.demandCnt;
 	}
 	
 	
