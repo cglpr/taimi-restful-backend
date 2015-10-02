@@ -9,6 +9,11 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +28,33 @@ import org.json.JSONObject;
  * 
  * @Since MongoClient 3.0
  */
+@Configuration
+@ComponentScan(basePackages = { "taimi.*" })
+@PropertySource("classpath:application.properties")
 public class MongoDbClient {
 
 	private MongoDatabase mdb;
 	private MongoClient mongoClient;
+	
+	@Value("${db.server.host}")
+	private String mongodbHost;
+	
+	@Value("${db.server.port}")
+	private int mongodbPort;
+	
+	@Value("${db.databaseName}")
+	private String databaseName;
+	
+	@Value("${db.userName}")
+	private String userName;
+	
+	@Value("${db.userPwd}")
+	private String userPwd;
+	
+	@Value("${db.collection.techDemand}")
+	private String collectionNameTechDemand;
+	
+	
 	
 	public MongoDbClient() {		
 	}
@@ -37,6 +65,8 @@ public class MongoDbClient {
 	
 	public void connect() {
 		 try{
+			 System.out.println("MongoDb url: " + mongodbHost + ":" + mongodbPort + "/" + databaseName);
+			 
 			 ServerAddress server = new ServerAddress("localhost", 27017);
 			 List<MongoCredential> credentials = new ArrayList<MongoCredential>();
 			 credentials.add(MongoCredential.createCredential("clientApp", "ProjectSkillDb", "clientApp".toCharArray()));
