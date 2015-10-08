@@ -1,6 +1,8 @@
 package taimi.task.scheduled.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -41,17 +43,16 @@ public class SkillDemandWebSearchServiceImpl implements AbstractService {
 		String baseUrl = "https://jobs.github.com/positions.json?description=";
 		String url = null;
 		
-		mongodb.connect();
+		List <JSONArray> jsonAArr = new ArrayList <JSONArray>();
 		
 		for(TechSkills val : TechSkills.values()) {
 			url = baseUrl + val.toString();
 			JSONArray jsonArr = JSONWebSearch.readJsonFromUrl(url);
 			if(jsonArr != null) {
+				jsonAArr.add(jsonArr);
 				mongodb.insertJSON(jsonArr, val.toString());
 			}
 		}
-		
-		mongodb.closeConnections();
 	}
 	
 }

@@ -8,7 +8,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import taimi.domain.skill.SkillDemand;
+import taimi.domain.SkillDemand;
 import taimi.domain.skill.TechSkills;
 import web.resource.json.JSONWebSearch;
 
@@ -51,7 +51,7 @@ public class SkillDemandRS {
 			
 			if(jsonArr != null) {
 				SkillDemand sd = new SkillDemand();
-				sd.setSkill(val.toString());
+				sd.setTechName(val.toString());
 				sd.setDemandCnt(jsonArr.length());
 				sdArr.add(sd);
 			} 

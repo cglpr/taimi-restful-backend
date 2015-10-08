@@ -10,15 +10,15 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import taimi.configuration.AppConfig;
 
 
 /**
@@ -27,33 +27,35 @@ import org.json.JSONObject;
  * @author vpotry
  * 
  * @Since MongoClient 3.0
+ * 
+ * @deprecated
+ * Use MongoSpringClient instead
+ * 
  */
-@Configuration
-@ComponentScan(basePackages = { "taimi.*" })
-@PropertySource("classpath:application.properties")
+@Deprecated
+@Component
 public class MongoDbClient {
 
 	private MongoDatabase mdb;
 	private MongoClient mongoClient;
-	
-	@Value("${db.server.host}")
+
+	@Value("${db.server.host:localhost}")
 	private String mongodbHost;
 	
-	@Value("${db.server.port}")
+	@Value("${db.server.port:27017}")
 	private int mongodbPort;
 	
-	@Value("${db.databaseName}")
+	@Value("${db.databaseName:ProjectSkillDb}")
 	private String databaseName;
 	
-	@Value("${db.userName}")
+	@Value("${db.userName:clientApp}")
 	private String userName;
 	
-	@Value("${db.userPwd}")
+	@Value("${db.userPwd:clientApp}")
 	private String userPwd;
 	
-	@Value("${db.collection.techDemand}")
+	@Value("${db.collection.techDemand:extTechDemand}")
 	private String collectionNameTechDemand;
-	
 	
 	
 	public MongoDbClient() {		
@@ -63,8 +65,10 @@ public class MongoDbClient {
 		mongoClient.close();
 	}
 	
+	@Deprecated
 	public void connect() {
 		 try{
+			 
 			 System.out.println("MongoDb url: " + mongodbHost + ":" + mongodbPort + "/" + databaseName);
 			 
 			 ServerAddress server = new ServerAddress("localhost", 27017);
@@ -81,10 +85,12 @@ public class MongoDbClient {
 		  }
 	}
 	
+	@Deprecated
 	public MongoCollection<Document> getCollectionForName(String collection) {
 		return mdb.getCollection(collection);
 	}
 	
+	@Deprecated
 	public void insertJSON(JSONArray jsonArr, String tech) {
 		
 		MongoCollection<Document> collection = mdb.getCollection("extTechDemand");

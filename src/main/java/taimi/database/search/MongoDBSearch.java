@@ -2,30 +2,32 @@ package taimi.database.search;
 
 import java.util.*;
 
-import org.bson.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import taimi.database.spring.MongoSpringClient;
+import taimi.domain.ExternalSource;
 
-import taimi.database.MongoDbClient;
-import taimi.domain.skill.SkillDemand;
-import taimi.domain.skill.TechSkills;
-
-import com.mongodb.client.MongoCollection;
-
+/**
+ * 
+ * @author vpotry
+ *
+ */
 public class MongoDBSearch {
-	public List<SkillDemand> getForAllTechnologies() {
-		MongoDbClient mongodb = new MongoDbClient();
-		mongodb.connect();
-		
-		MongoCollection<Document> col = mongodb.getCollectionForName("extTechDemand");
 	
-		List<SkillDemand> demandLst = new ArrayList<SkillDemand>();
-		for(TechSkills val : TechSkills.values()) {
-			int cnt = (int) col.count(new Document("techname", val.toString()));
-			demandLst.add(new SkillDemand(val.toString(), cnt));
-			
-		}
-		
-		mongodb.closeConnections();
-		Collections.sort(demandLst);
-		return demandLst;
+	/**
+	 * 
+	 * @param srcName
+	 * @return
+	 */
+	public static List<ExternalSource> getSkillDemandFromSourcename(String srcName) {
+		return MongoSpringClient.find(Criteria.where("name").is(srcName), ExternalSource.class);
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static List<ExternalSource> getAllSkillDemands() {
+		return MongoSpringClient.findAll(ExternalSource.class);
+	}
+
 }

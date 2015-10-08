@@ -13,7 +13,9 @@ import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import taimi.database.search.MongoDBSearch;
-import taimi.domain.skill.SkillDemand;
+import taimi.domain.ExternalSource;
+import taimi.domain.SkillDemand;
+import taimi.visualization.DataTableMaker;
 
 import com.google.visualization.datasource.base.TypeMismatchException;
 import com.google.visualization.datasource.datatable.ColumnDescription;
@@ -86,24 +88,10 @@ public class TechDataTable {
 	 * @return DataTable
 	 */
 	private DataTable getDataTable() {
-		DataTable dt = new DataTable();
-		
-		List<ColumnDescription> columns = new ArrayList<ColumnDescription>();  
-		columns.add(new ColumnDescription("techname", ValueType.TEXT, "Technology"));  
-		columns.add(new ColumnDescription("count", ValueType.NUMBER, "Demand#"));
-
-        dt.addColumns(columns);  
-        
-        MongoDBSearch dbSearch = new MongoDBSearch();
-        
-		try {
-			List<SkillDemand> sdList = dbSearch.getForAllTechnologies();
-			for(SkillDemand sd : sdList) {
-				dt.addRowFromValues(sd.getSkill(), sd.getDemandCnt());
-			}
-		} catch (TypeMismatchException ex) {
-			ex.printStackTrace();
-		}
+		List <ExternalSource> lst = MongoDBSearch.getAllSkillDemands();
+		ColumnDescription[] columns = {new ColumnDescription("techname", ValueType.TEXT, "Technology"),  
+									new ColumnDescription("count", ValueType.NUMBER, "Demand #")};
+		DataTable dt = DataTableMaker.makeDataTable(lst, columns);
 		
 		return dt;
 	}

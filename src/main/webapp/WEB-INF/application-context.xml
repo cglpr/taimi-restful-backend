@@ -17,5 +17,4 @@
 	
 	<!-- Scheduling config -->
 	<import resource="scheduling-context.xml" />
-	
 </beans>
