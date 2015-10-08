@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import taimi.database.spring.MongoSpringClient;
 import taimi.domain.ExternalSource;
-import taimi.domain.SkillDemand;
 
 /**
  * 

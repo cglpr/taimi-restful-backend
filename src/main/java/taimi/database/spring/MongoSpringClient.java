@@ -3,8 +3,8 @@ package taimi.database.spring;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,15 +18,15 @@ import taimi.domain.MongoDbObject;
 
 public class MongoSpringClient {
 	
-	private static final Logger logger = Logger.getLogger(MongoSpringClient.class);
+	private static final Logger logger = LogManager.getLogger(MongoSpringClient.class);
 	
 	private static MongoOperations getMongoOperations() {
-		ApplicationContext ctx = 
+		AnnotationConfigApplicationContext ctx = 
 	             new AnnotationConfigApplicationContext(SpringMongoDbConfig.class);
 		
 		MongoOperations mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
 		
-		//ctx.close();
+		ctx.close();
 		
 		return mongoOperation;
 	}
