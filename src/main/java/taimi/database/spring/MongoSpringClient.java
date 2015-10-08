@@ -9,6 +9,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+
+import com.mongodb.WriteResult;
 
 import taimi.database.config.SpringMongoDbConfig;
 import taimi.domain.MongoDbObject;
@@ -17,17 +20,19 @@ public class MongoSpringClient {
 	
 	private static final Logger logger = Logger.getLogger(MongoSpringClient.class);
 	
-	private  static MongoOperations getMongoOperations() {
+	private static MongoOperations getMongoOperations() {
 		ApplicationContext ctx = 
 	             new AnnotationConfigApplicationContext(SpringMongoDbConfig.class);
 		
-		 for (  String bean : ctx.getBeanDefinitionNames()) {
-			    System.out.println(bean);
-			  }
-		
 		MongoOperations mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
 		
+		//ctx.close();
+		
 		return mongoOperation;
+	}
+	
+	public static <T> WriteResult updateObject(Query query, Update update, Class<T> klazz) {
+		return getMongoOperations().updateFirst(query, update, klazz);
 	}
 	
 	public static boolean saveObject(MongoDbObject obj) {

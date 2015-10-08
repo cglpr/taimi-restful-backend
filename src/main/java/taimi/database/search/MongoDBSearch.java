@@ -3,8 +3,10 @@ package taimi.database.search;
 import java.util.*;
 
 import org.springframework.data.mongodb.core.query.Criteria;
+
 import taimi.database.spring.MongoSpringClient;
 import taimi.domain.ExternalSource;
+import taimi.domain.SkillDemand;
 
 /**
  * 
@@ -18,8 +20,8 @@ public class MongoDBSearch {
 	 * @param srcName
 	 * @return
 	 */
-	public static List<ExternalSource> getSkillDemandFromSourcename(String srcName) {
-		return MongoSpringClient.find(Criteria.where("name").is(srcName), ExternalSource.class);
+	public static List<ExternalSource> getSkillDemandForURL(String url) {
+		return MongoSpringClient.find(Criteria.where("url").is(url), ExternalSource.class);
 	}
 	
 	/**
@@ -27,7 +29,9 @@ public class MongoDBSearch {
 	 * @return
 	 */
 	public static List<ExternalSource> getAllSkillDemands() {
-		return MongoSpringClient.findAll(ExternalSource.class);
+		 return MongoSpringClient.findAll(ExternalSource.class);
 	}
+	
+	
 
 }
