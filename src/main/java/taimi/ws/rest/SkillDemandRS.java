@@ -9,7 +9,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import taimi.domain.SkillDemand;
-import taimi.domain.skill.TechSkills;
 import web.resource.json.JSONWebSearch;
 
 import javax.ws.rs.core.MediaType;
@@ -24,11 +23,14 @@ import org.json.JSONException;
  * @author vpotry
  *
  */
+@Deprecated
 @Path("extskilldemand")
 public class SkillDemandRS {
 	
 	// TODO: from configuration...
 	private static final String BASE_URL = "https://jobs.github.com/positions.json";
+	
+	private enum  TechSkills {Java, Javascript, JQuery, Angularjs, Perl, Ruby, Python};
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -36,6 +38,7 @@ public class SkillDemandRS {
     	List <SkillDemand> sdArr = new ArrayList<SkillDemand>();
     	
     	String url = null;
+ 
     	
     	for(TechSkills val : TechSkills.values()) {
 			url = BASE_URL + "?description=" + val.toString();

@@ -1,8 +1,5 @@
 package taimi.domain;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -14,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  */
 @Document(collection = "GlobalTechDemand")
-public class SkillDemand extends MongoDbObject implements Comparable<SkillDemand>  {
+public class SkillDemand implements MongoDbObject, Comparable<SkillDemand>  {
 	
 	@Id
 	private ObjectId id;
@@ -28,7 +25,7 @@ public class SkillDemand extends MongoDbObject implements Comparable<SkillDemand
 	
 	
 	public SkillDemand() {
-		this("", 0, "");
+		this(null, 0, null);
 	}
 	
 	public SkillDemand(String hash, String tech, int demandCnt) {
@@ -71,16 +68,5 @@ public class SkillDemand extends MongoDbObject implements Comparable<SkillDemand
 	@Override
 	public int compareTo(SkillDemand sd) {
 		return sd.getDemandCnt() - this.demandCnt;
-	}
-	
-	@Override
-	public String getCollectionName() throws Exception {
-		Annotation annotation = ExternalSource.class.getAnnotation(Document.class);
-	    Class<? extends Annotation> type = annotation.annotationType();
-	   
-	    Method method = type.getDeclaredMethod("collection");
-	    String collectionName = (String) method.invoke(annotation, (Object[])null);
-
-	    return collectionName;
 	}
 }

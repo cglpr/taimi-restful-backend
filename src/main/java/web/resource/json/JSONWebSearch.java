@@ -56,7 +56,6 @@ public class JSONWebSearch {
 
 	  public static void main(String[] argv) throws IOException, JSONException {
 		  JSONArray json = readJsonFromUrl("https://jobs.github.com/positions.json?description=java");
-	    System.out.println(json.toString());
-	   
+		  System.out.println(json.toString());
 	  }
 	}

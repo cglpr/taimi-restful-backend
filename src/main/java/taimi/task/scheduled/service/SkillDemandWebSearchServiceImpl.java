@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import taimi.database.MongoDbClient;
-import taimi.domain.skill.TechSkills;
+import taimi.annotation.utils.AnnotationUtils;
+import taimi.database.spring.MongoSpringClient;
+import taimi.domain.ExternalSource;
+import taimi.domain.SkillDemand;
+import taimi.domain.SourceURL;
+import taimi.domain.Technology;
 import web.resource.json.JSONWebSearch;
 
 /**
@@ -21,38 +26,87 @@ import web.resource.json.JSONWebSearch;
  *
  */
 public class SkillDemandWebSearchServiceImpl implements AbstractService {
-	protected static Logger logger = Logger.getLogger(SkillDemandWebSearchServiceImpl.class);
-
-	private final MongoDbClient mongodb = new MongoDbClient();
+	protected static Logger logger = LogManager.getLogger(SkillDemandWebSearchServiceImpl.class);
 	
 	public void performService() {
 		String threadName = Thread.currentThread().getName();
 		
 		try {
 			logger.info("Scheduled service thread " + threadName + " started.");
-			getTechs();
+			List <ExternalSource> data = getData();
+			if(data != null) {
+				storeData(data);
+			}
 		} catch (JSONException e) {
+			e.printStackTrace();
 			logger.error("Exception occurred in JSON handling",e);
 		} catch (IOException e) {
+			e.printStackTrace();
 			logger.error("Exception occurred in reading JSON from URL",e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("Exception occurred while getting SkillDemand data",e);
 		}
+		
 		logger.info("Scheduled service thread " + threadName + " finished.");
 	}
 	
-	private void getTechs() throws JSONException, IOException {
-		String baseUrl = "https://jobs.github.com/positions.json?description=";
-		String url = null;
+	private List <ExternalSource> getData() throws Exception {
+		List <SourceURL>  urls = MongoSpringClient.findAll(SourceURL.class);
+		List <Technology> techs =  MongoSpringClient.findAll(Technology.class);
 		
-		List <JSONArray> jsonAArr = new ArrayList <JSONArray>();
+		if(urls == null || urls.size() == 0) {
+			logger.warn("There are no SourceURLs in MongoDb collection " + AnnotationUtils.getCollectionName(SourceURL.class));
+			logger.warn("-> Skill demand data not fetched.");
+			return null;
+		} 
 		
-		for(TechSkills val : TechSkills.values()) {
-			url = baseUrl + val.toString();
-			JSONArray jsonArr = JSONWebSearch.readJsonFromUrl(url);
-			if(jsonArr != null) {
-				jsonAArr.add(jsonArr);
-				mongodb.insertJSON(jsonArr, val.toString());
-			}
+		if(techs == null || techs.size() == 0) {
+			logger.warn("There are no Technologies in MongoDb collection " + AnnotationUtils.getCollectionName(Technology.class));
+			logger.warn("-> Skill demand data not fetched.");
+			return null;
 		}
+		
+		List <ExternalSource> extSrcLst = new ArrayList <ExternalSource>();
+		
+		for(SourceURL url : urls) {
+			ExternalSource extSrc = new ExternalSource(url.getUrl());
+			List <SkillDemand> demands = new ArrayList<SkillDemand>();
+			
+			for(Technology tech : techs) {
+				String searchURL = url.getUrl();
+				String urlParams = url.getParameters();
+				
+				if(urlParams != null) {
+					searchURL = searchURL + urlParams.replace("<technology>", tech.getName());
+				}
+	
+				demands.add(getDemand(searchURL, tech.getName()));	
+			}
+			extSrc.setDemands(demands);
+			extSrcLst.add(extSrc);
+		}
+		
+		return extSrcLst;
 	}
 	
+	private void storeData(List <ExternalSource> extSrcLst) {
+		logger.debug("Storing data...");
+		for(ExternalSource s : extSrcLst) {
+			MongoSpringClient.saveObject(s);
+		}
+		logger.debug("-> done");
+	}
+	
+	private SkillDemand getDemand(String URL, String techName) throws JSONException, IOException {
+		JSONArray jsonArr = JSONWebSearch.readJsonFromUrl(URL);
+
+		// Well, currently we don't want to save any other data than amounts...
+		int cnt = 0;
+		if(jsonArr != null) {
+			cnt = jsonArr.length();
+		}
+		return new SkillDemand(techName, cnt,  "");
+	}
 }
+ 

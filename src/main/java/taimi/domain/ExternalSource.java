@@ -1,10 +1,7 @@
 package taimi.domain;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -15,42 +12,31 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import taimi.annotation.mongodb.CascadeSave;
 
-@Document(collection = "externalSources")
-public class ExternalSource extends MongoDbObject {
+@Document(collection = "ExternalSources")
+public class ExternalSource implements MongoDbObject {
 	
 	@Id
 	private ObjectId id;
-	
-	@Indexed(unique = true)
-	private String name;
 	
 	@DBRef
 	@CascadeSave
 	private List<SkillDemand> demands;
 
+	@Indexed(unique = true)
 	private String url;	
 	
 	public ExternalSource() {
-		this("", "", new ArrayList<SkillDemand>());
+		this(null, new ArrayList<SkillDemand>());
 	}
 	
-	public ExternalSource(String name, String url) {
-		this(name, url, new ArrayList<SkillDemand>());
+	public ExternalSource(String url) {
+		this(url, new ArrayList<SkillDemand>());
 	}
-	
-	public ExternalSource(String name, String url, List <SkillDemand> demands) {
-		this.name = name;
+
+	public ExternalSource(String url, List <SkillDemand> demands) {
 		this.url = url;
 		this.demands = demands;
 		this.id =  new ObjectId();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getUrl() {
@@ -76,14 +62,4 @@ public class ExternalSource extends MongoDbObject {
 		this.demands.add(demand);
 	}
 	
-	@Override
-	public String getCollectionName() throws Exception {
-		Annotation annotation = ExternalSource.class.getAnnotation(Document.class);
-	    Class<? extends Annotation> type = annotation.annotationType();
-	   
-	    Method method = type.getDeclaredMethod("collection");
-	    String collectionName = (String) method.invoke(annotation, (Object[])null);
-
-	    return collectionName;
-	}
 }

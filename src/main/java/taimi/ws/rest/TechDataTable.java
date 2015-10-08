@@ -14,7 +14,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import taimi.database.search.MongoDBSearch;
 import taimi.domain.ExternalSource;
-import taimi.domain.SkillDemand;
 import taimi.visualization.DataTableMaker;
 
 import com.google.visualization.datasource.base.TypeMismatchException;
@@ -89,6 +88,7 @@ public class TechDataTable {
 	 */
 	private DataTable getDataTable() {
 		List <ExternalSource> lst = MongoDBSearch.getAllSkillDemands();
+		
 		ColumnDescription[] columns = {new ColumnDescription("techname", ValueType.TEXT, "Technology"),  
 									new ColumnDescription("count", ValueType.NUMBER, "Demand #")};
 		DataTable dt = DataTableMaker.makeDataTable(lst, columns);

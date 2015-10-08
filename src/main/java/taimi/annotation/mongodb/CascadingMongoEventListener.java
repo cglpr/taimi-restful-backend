@@ -64,10 +64,6 @@ public class CascadingMongoEventListener extends AbstractMongoEventListener {
 
       public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
           ReflectionUtils.makeAccessible(field);
-          System.out.println("ID? " + field);
-          if (List.class.isAssignableFrom(field.getType())) {
-        	  System.out.println("List");
-          }
           
           if (field.isAnnotationPresent(Id.class)) {
               idFound = true;
