@@ -3,27 +3,20 @@ package taimi.backend.controller;
 import java.util.*;
 
 import org.springframework.web.bind.annotation.RestController; 
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 import taimi.backend.data.handler.DataTableMaker;
 import taimi.backend.data.handler.JsonHandler;
 import taimi.backend.domain.ExternalSource;
 import taimi.backend.service.MongoDBService;
 
-import com.google.visualization.datasource.base.TypeMismatchException;
 import com.google.visualization.datasource.datatable.ColumnDescription;
 import com.google.visualization.datasource.datatable.DataTable;
 import com.google.visualization.datasource.datatable.value.ValueType;
-import com.google.visualization.datasource.render.JsonRenderer;
+
 
 /**
  * Provides google visialization DataTable 
@@ -33,7 +26,7 @@ import com.google.visualization.datasource.render.JsonRenderer;
  *
  */
 @RestController
-@RequestMapping("/rest/graph")
+@RequestMapping("/rest/skilldemand")
 public class GraphController {
 	
 	@Autowired 
@@ -49,4 +42,12 @@ public class GraphController {
 		
 		return JsonHandler.toJsonString(dt);
 	}
+	
+	@RequestMapping(value = "/nvd3", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List <ExternalSource> getNvd3Chart() {
+		List <ExternalSource> lst = mongoDBService.getAllSkillDemands();
+
+        return lst;
+	}
+
 }
