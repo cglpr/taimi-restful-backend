@@ -4,7 +4,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -20,7 +19,6 @@ import taimi.backend.service.MongoDBService;
 import com.mongodb.MongoClient;
 
 @Configuration
-@ComponentScan({"taimi.backend.configuration","taimi.backend.controller","taimi.backend.service"})
 @PropertySource("classpath:application.properties")
 public class SpringConfiguration {
 
