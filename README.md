@@ -18,7 +18,7 @@ For Google DataTable (usable directly as source data) (json):
 http://<host>:<port>/TaimiBackend/rest/skilldemand/googlechart
 
 For orher/nvd3 charts:
-http://<host>:<port>//TaimiBackend/rest/skilldemand/nvd3
+http://host:port//TaimiBackend/rest/skilldemand/nvd3
 Supports JSONP callback =>
-http://<host>:<port>//TaimiBackend/rest/skilldemand/nvd3?callback=drawChart
+http://host:port//TaimiBackend/rest/skilldemand/nvd3?callback=drawChart
 
