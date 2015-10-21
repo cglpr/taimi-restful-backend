@@ -4,17 +4,17 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:task="http://www.springframework.org/schema/task" 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	   		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 	   		http://www.springframework.org/schema/task
-			http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+			http://www.springframework.org/schema/task/spring-task-4.0.xsd">
 			
 	<!-- Spring's scheduling support -->
 	<task:scheduled-tasks scheduler="taskScheduler">
-    	<task:scheduled ref="skillDemandWebSearchService" method="performService" cron="0 0 0/6 * * ?"/>
+    	<task:scheduled ref="skillDemandWebSearchService" method="performService" cron="0 0 0/4 * * ?"/>
 	</task:scheduled-tasks>
 	
 	<!-- The bean that does the actual work -->
-	<bean id="skillDemandWebSearchService" class="taimi.task.scheduled.service.SkillDemandWebSearchServiceImpl" />
+	<bean id="skillDemandWebSearchService" class="taimi.backend.service.SkillDemandWebSearchService" />
 	
 	<!-- Defines a ThreadPoolTaskScheduler instance with configurable pool size. -->
 	<task:scheduler id="taskScheduler" pool-size="2"/>      

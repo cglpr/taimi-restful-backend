@@ -2,6 +2,7 @@ package taimi.backend.controller;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RestController; 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,12 +30,16 @@ import com.google.visualization.datasource.datatable.value.ValueType;
 @RequestMapping("/rest/skilldemand")
 public class GraphController {
 	
+	private final Logger logger = Logger.getLogger(GraphController.class);
+	
 	@Autowired 
 	private MongoDBService mongoDBService;
 	
-	@RequestMapping(value = "/googlechart", method = RequestMethod.GET)
+	@RequestMapping(value = "/googlechart", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
 	public String getGoogleChart() {
+		logger.debug("google chart data requested");
 		List <ExternalSource> lst = mongoDBService.getAllSkillDemands();
+		logger.debug("Data size: " + ((lst != null)?lst.size():"[null]"));
 		
 		ColumnDescription[] columns = {new ColumnDescription("techname", ValueType.TEXT, "Technology"),  
 									new ColumnDescription("count", ValueType.NUMBER, "Demand #")};
@@ -44,10 +49,22 @@ public class GraphController {
 	}
 	
 	@RequestMapping(value = "/nvd3", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List <ExternalSource> getNvd3Chart() {
+	public List <ExternalSource> getNv3dChartData() {
+		logger.debug("Angular/nvd3 data requested");
 		List <ExternalSource> lst = mongoDBService.getAllSkillDemands();
-
+		// TODO: Format for nv3d specific data
+		logger.debug("Data size: " + ((lst != null)?lst.size():"[null]"));
         return lst;
 	}
+	
+	@RequestMapping(value = "/general", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List <ExternalSource> getSkillDemandData() {
+		logger.debug("(Unformatted) skilldemand data requested");
+		List <ExternalSource> lst = mongoDBService.getAllSkillDemands();
+		logger.debug("Data size: " + ((lst != null)?lst.size():"[null]"));
+        return lst;
+	}
+	
+	
 
 }

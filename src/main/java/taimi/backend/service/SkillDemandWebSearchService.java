@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import taimi.backend.annotation.utils.AnnotationUtils;
+import taimi.backend.data.handler.JsonHandler;
 import taimi.backend.domain.ExternalSource;
 import taimi.backend.domain.SkillDemand;
 import taimi.backend.domain.SourceURL;
@@ -24,13 +24,16 @@ import org.springframework.stereotype.Service;
  * 
  * Fetches data from external sources & inserts into MongoDb.
  * 
+ * TODO: Move all data processing to separate handler behind data notification
+ * @see taimi.backend.listener.DataEventListener
+ * 
  * @author vpotry
  *
  */
 @Service("skillDemandWebSearchService")
 public class SkillDemandWebSearchService implements AbstractService {
 	
-	private final Logger logger = LogManager.getLogger(SkillDemandWebSearchService.class);
+	private final Logger logger = Logger.getLogger(SkillDemandWebSearchService.class);
 	
 	@Autowired 
 	MongoDBService mongoDBService;
@@ -39,10 +42,9 @@ public class SkillDemandWebSearchService implements AbstractService {
 	DataEventPublisher dataEventPublisher;
 	
 	public void performService() {
-		String threadName = Thread.currentThread().getName();
+		logger.info("Scheduled service thread " + Thread.currentThread().getName() + " started.");
 		
 		try {
-			logger.info("Scheduled service thread " + threadName + " started.");
 			List <ExternalSource> data = getData();
 			if(data != null) {
 				storeData(data);
@@ -58,7 +60,7 @@ public class SkillDemandWebSearchService implements AbstractService {
 			logger.error("Exception occurred while getting SkillDemand data",e);
 		}
 		
-		logger.info("Scheduled service thread " + threadName + " finished.");
+		logger.info(Thread.currentThread().getName() + " : All tasks done.");
 	}
 	
 	private List <ExternalSource> getData() throws Exception {
@@ -91,7 +93,7 @@ public class SkillDemandWebSearchService implements AbstractService {
 					searchURL = searchURL + urlParams.replace("<technology>", tech.getName());
 				}
 	
-				demands.add(getDemand(searchURL, tech.getName()));	
+				demands.add(getDemand(searchURL, tech.getName(), url.getCriteria()));	
 			}
 			extSrc.setDemands(demands);
 			extSrcLst.add(extSrc);
@@ -101,22 +103,44 @@ public class SkillDemandWebSearchService implements AbstractService {
 	}
 	
 	private void storeData(List <ExternalSource> extSrcLst) {
-		logger.debug("Storing data...");
-		for(ExternalSource s : extSrcLst) {
+		try {
+			logger.debug("Storing to collection " + 
+					AnnotationUtils.getCollectionName(ExternalSource.class) + 
+					" -> " + extSrcLst.size() + " documents.");
+		} catch (Exception e) {
+			logger.debug("Storing to collection (failed to read collection name from class:( )");
+		}
+		
+		// *** This is hopefully only temporal solution! Read TODO: fix update!
+		mongoDBService.dropCollection(SkillDemand.class);
+		mongoDBService.dropCollection(ExternalSource.class);
+		
+		for(ExternalSource s : extSrcLst) {			
+			//esDb  = mongoDBService.findOne(Criteria.where("url").is(s.getUrl()), ExternalSource.class);
+			/*if(esDb == null) {
+				// New one
+				mongoDBService.saveObject(s);
+			} else {
+				// Change db values for fresh values... TODO: there must be a better way...
+				//List <SkillDemand> sdFresh = s.getDemands();
+				
+				// -> Or worse :) -> ***
+			} */
+				
 			mongoDBService.saveObject(s);
 		}
+		
 		logger.debug("-> done");
 	}
 	
-	private SkillDemand getDemand(String URL, String techName) throws JSONException, IOException {
+	private SkillDemand getDemand(String URL, String techName, final String rule) throws JSONException, IOException {
 		JSONArray jsonArr = WebSearchService.readJsonFromUrl(URL);
 		publishData(jsonArr);
 		/** ^-- As Listener behind publish does nothing yet, we handle data here **/
 		// Well, currently we don't want to save any other data than amounts...
-		int cnt = 0;
-		if(jsonArr != null) {
-			cnt = jsonArr.length();
-		}
+		
+		int cnt = JsonHandler.getCount(jsonArr, rule);
+		
 		return new SkillDemand(techName, cnt,  "");
 	}
 	

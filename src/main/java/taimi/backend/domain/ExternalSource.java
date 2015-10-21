@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import taimi.backend.annotation.mongodb.CascadeSave;
 
-@Document(collection = "ExternalSources")
+@Document(collection = "externalSources")
 public class ExternalSource implements MongoDbObject {
 	
 	@Id

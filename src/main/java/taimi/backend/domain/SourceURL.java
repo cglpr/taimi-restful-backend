@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author vpotry
  *
  */
-@Document(collection = "SourceUrls")
+@Document(collection = "sourceUrls")
 public class SourceURL implements MongoDbObject {
 	
 	@Id
@@ -19,15 +19,21 @@ public class SourceURL implements MongoDbObject {
 	private String url;
 	private String parameters;
 	
+	private String criteria;
+	
 	public SourceURL() {
 		this(null, null);
 	}
-			
 	
 	public SourceURL(String url, String parameters) {
+		this(url, parameters, null);
+	}
+	
+	public SourceURL(String url, String parameters, String criteria) {
 		this.id = new ObjectId();
 		this.url = url;
 		this.setParameters(parameters);
+		this.setCriteria(criteria);
 	}
 	
 	public ObjectId getId() {
@@ -52,5 +58,13 @@ public class SourceURL implements MongoDbObject {
 
 	public void setParameters(String parameters) {
 		this.parameters = parameters;
+	}
+
+	public String getCriteria() {
+		return criteria;
+	}
+
+	public void setCriteria(String criteria) {
+		this.criteria = criteria;
 	}
 }

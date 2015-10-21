@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import taimi.backend.configuration.SpringConfiguration;
+import taimi.backend.data.handler.JsonHandler;
 import taimi.backend.event.DataEventPublisher;
 import taimi.backend.service.WebSearchService;
 
@@ -27,6 +28,14 @@ public class EventTest {
 		  JSONArray json = WebSearchService.readJsonFromUrl("http://service.dice.com/api/rest/jobsearch/v1/simple.json?text=java"); //readJsonFromUrl("https://jobs.github.com/positions.json?description=java");
 		  DataEventPublisher dataEventPublisher = getDataEventPublisher();
 		  dataEventPublisher.publish(json);
+	}
+	
+	@Test
+	public void testJSONArraySize() throws IOException, JSONException {
+		JSONArray json = WebSearchService.readJsonFromUrl("http://service.dice.com/api/rest/jobsearch/v1/simple.json?text=java"); //readJsonFromUrl("https://jobs.github.com/positions.json?description=java");
+		
+		System.out.println(JsonHandler.getCount(json, "GET_VALUE:count"));
+
 	}
 	
 	private static DataEventPublisher getDataEventPublisher() {

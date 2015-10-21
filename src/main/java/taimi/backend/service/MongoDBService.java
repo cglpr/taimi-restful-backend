@@ -76,9 +76,24 @@ public class MongoDBService {
 		return mongoOperation.find(query, klazz);
 	}
 	
+	public <T> T findOne(Criteria criteria, Class<T> klazz) {    
+		Query query = new Query(criteria);
+		return mongoOperation.findOne(query, klazz);
+	}
+	
 	public com.mongodb.DBCollection getCollection(String collectionName) {
 		return mongoOperation.getCollection(collectionName);
 	}
+	
+	/**
+	 * Be careful out there :)
+	 * 
+	 * @param klazz
+	 */
+	public <T> void dropCollection(Class<T> klazz) {
+		mongoOperation.dropCollection(klazz);
+	}
+	
 	
 	/**
 	 * 

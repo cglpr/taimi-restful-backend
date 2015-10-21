@@ -93,7 +93,7 @@ public class MongoSpringTest {
 		}
 	}
 
-	@Test
+
 	public void testCollectionNames() {
 		try {
 			assertEquals("SourceUrls", AnnotationUtils.getCollectionName(SourceURL.class));

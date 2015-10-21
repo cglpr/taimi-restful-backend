@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author vpotry
  *
  */
-@Document(collection = "GlobalTechDemand")
+@Document(collection = "globalTechDemand")
 public class SkillDemand implements MongoDbObject, Comparable<SkillDemand>  {
 	
 	@Id
