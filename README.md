@@ -14,6 +14,12 @@ Requires JDK >= 1.7
 # Usage
 Deploy TaimiBackend.war into server container (Tomcat 7 used during development)
 
-Currently provides only google DataTable data for google.visualization chart types.
-URL (Returns DataTable data as json):
-http://<host>:<port>/TaimiBackend/rest/graph/googlechart
+# For Google DataTable (usable directly as source data) (json):
+http://<host>:<port>/TaimiBackend/rest/skilldemand/googlechart
+
+# For orher/nvd3 charts:
+http://host:port//TaimiBackend/rest/skilldemand/nvd3
+
+# Supports JSONP callback =>
+http://host:port//TaimiBackend/rest/skilldemand/nvd3?callback=drawChart
+
